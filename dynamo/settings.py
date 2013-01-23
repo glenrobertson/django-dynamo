@@ -2,7 +2,6 @@
 # django imports
 from django.conf import settings
 
-
 # Delete database column after field has been deleted
 DYNAMO_DELETE_COLUMNS = getattr(settings,'DYNAMO_DELETE_COLUMNS',True)
 
@@ -17,6 +16,8 @@ DYNAMO_DEFAULT_MODULE = getattr(settings,'DYNAMO_DEFAULT_MODULE','dynamo.models'
 
 # Available standard Field Types (as of Django 1.3)
 from django.db import models
+from django.contrib.gis.db import models as gis_models
+
 FIELD_TYPES = [('AutoField', models.AutoField),
                ('BooleanField', models.BooleanField),
                ('CharField', models.CharField),
@@ -39,10 +40,29 @@ FIELD_TYPES = [('AutoField', models.AutoField),
                ('SmallIntegerField', models.SmallIntegerField),
                ('ForeignKey', models.ForeignKey),
                ('OneToOneField', models.OneToOneField),
-               ('ManyToManyField', models.ManyToManyField)
+               ('ManyToManyField', models.ManyToManyField),
+               # GIS models
+               ('GeometryField', gis_models.GeometryField),
+               ('PointField', gis_models.PointField),
+               ('LineStringField', gis_models.LineStringField),
+               ('MultiPointField', gis_models.MultiPointField),
+               ('MultiLineStringField', gis_models.MultiLineStringField),
+               ('MultiPolygonField', gis_models.MultiPolygonField),
+               ('GeometryCollectionField', gis_models.GeometryCollectionField),
                ]
 
 DYNAMO_FIELD_TYPES = getattr(settings,'DYNAMO_FIELD_TYPES',FIELD_TYPES)
+
+GIS_FIELD_TYPES = ['GeometryField',
+                   'PointField',
+                   'LineStringField',
+                   'MultiPointField',
+                   'MultiLineStringField',
+                   'MultiPolygonField',
+                   'GeometryCollectionField',
+                   ]
+DYNAMO_GIS_FIELD_TYPES = getattr(settings,'DYNAMO_GIS_FIELD_TYPES',GIS_FIELD_TYPES)
+
 
 STANDARD_FIELD_TYPES = ['AutoField',
                         'BooleanField',
@@ -85,8 +105,7 @@ STRING_FIELD_TYPES =    ['CommaSeparatedIntegerField',
                         ]
 DYNAMO_STRING_FIELD_TYPES = getattr(settings, 'DYNAMO_STRING_FIELD_TYPES',STRING_FIELD_TYPES)
 
+
 # Available relationship Field Types (as of Django 1.3)
 RELATION_FIELD_TYPES =['ForeignKey','OneToOneField','ManyToManyField']
 DYNAMO_RELATION_FIELD_TYPES = getattr(settings, 'DYNAMO_RELATION_FIELD_TYPES',RELATION_FIELD_TYPES)
-
-

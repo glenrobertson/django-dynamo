@@ -6,6 +6,7 @@
 # Django imports
 from django.core.validators import ValidationError
 from django.db import models, transaction, IntegrityError
+from django.contrib.gis.db import models as gis_models
 from django.db.models.signals import post_save, pre_save, pre_delete, post_delete
 from django.db.models.loading import cache as app_cache
 from django.utils import simplejson
@@ -15,7 +16,7 @@ from django.utils.hashcompat import md5_constructor
 # Dynamo imports
 from dynamo.settings import DYNAMO_DEFAULT_MODULE, DYNAMO_DEFAULT_APP, \
      DYNAMO_STANDARD_FIELD_TYPES, DYNAMO_RELATION_FIELD_TYPES,DYNAMO_STRING_FIELD_TYPES, \
-     DYNAMO_INTEGER_FIELD_TYPES
+     DYNAMO_INTEGER_FIELD_TYPES, DYNAMO_GIS_FIELD_TYPES
 from dynamo.utils import remove_from_model_cache, build_existing_dynamic_models
 from dynamo import handlers
 from dynamo.exceptions import DuplicateFieldName
@@ -147,8 +148,9 @@ class MetaModel(models.Model):
 
 
 STANDARD_FIELD_TYPE_CHOICES = [ (field,_(field)) for field in DYNAMO_STANDARD_FIELD_TYPES]
+GIS_FIELD_TYPE_CHOICES = [ (field,_(field)) for field in DYNAMO_GIS_FIELD_TYPES]
 RELATION_FIELD_TYPE_CHOICES = [ (field,_(field)) for field in DYNAMO_RELATION_FIELD_TYPES]
-FIELD_TYPE_CHOICES = STANDARD_FIELD_TYPE_CHOICES +RELATION_FIELD_TYPE_CHOICES
+FIELD_TYPE_CHOICES = STANDARD_FIELD_TYPE_CHOICES +GIS_FIELD_TYPE_CHOICES +RELATION_FIELD_TYPE_CHOICES
 
        
 class MetaField(models.Model):
@@ -179,7 +181,10 @@ class MetaField(models.Model):
     @property
     def django_field(self):
         '''Returns the correct django field class, not instantiated yet'''
-        return getattr(models, self.type)
+        try:
+            return getattr(models, self.type)
+        except AttributeError:
+            return getattr(gis_models, self.type)
 
     @property
     def django_field_attrs(self):
