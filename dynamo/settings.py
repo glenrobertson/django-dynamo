@@ -59,7 +59,6 @@ STANDARD_FIELD_TYPES = ['AutoField',
                         'SlugField',
                         'TimeField',
                         'URLField',
-                        'XMLField',
                         'BigIntegerField',
                         'IntegerField',
                         'PositiveIntegerField',
@@ -83,7 +82,6 @@ STRING_FIELD_TYPES =    ['CommaSeparatedIntegerField',
                         'ImageField',
                         'SlugField',
                         'URLField',
-                        'XMLField',
                         ]
 DYNAMO_STRING_FIELD_TYPES = getattr(settings, 'DYNAMO_STRING_FIELD_TYPES',STRING_FIELD_TYPES)
 
