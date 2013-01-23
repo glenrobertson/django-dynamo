@@ -36,7 +36,7 @@ setup(
     license='BSD',
     platforms=['any'],
     classifiers=CLASSIFIERS,
-    install_requires=['django'],
+    install_requires=['Django'],
     packages=find_packages(exclude=['tests\*','dynamo_project.*']),
     zip_safe = False
 )
