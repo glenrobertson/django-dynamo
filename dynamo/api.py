@@ -4,7 +4,7 @@
 
 # dynamo imports
 from dynamo.models import MetaModel, MetaField
-from dynamo.exceptions MetaModelAlreadyAssigned, NoMetaModelAssigned, AssignedModelNotOfTypeMetaModel
+from dynamo.exceptions import MetaModelAlreadyAssigned, NoMetaModelAssigned, AssignedModelNotOfTypeMetaModel
 
 class Field(object):
     pass
