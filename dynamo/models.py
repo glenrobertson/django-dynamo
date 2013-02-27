@@ -30,7 +30,7 @@ handlers.when_classes_prepared('dynamo.MetaModel','dynamo.MetaField', build_exis
     
   
 class MetaModel(models.Model):
-    name = models.CharField(verbose_name=_('Model Name'),max_length=50)
+    name = models.CharField(verbose_name=_('Model Name'),max_length=50, unique=True)
     description = models.CharField(verbose_name=_('Model Description'),max_length=255,blank=True)
     app = models.CharField(verbose_name=_('Application'), max_length=50,blank=True,
                                    choices=tuple([(app.__name__.split('.')[-2],_(app.__name__.split('.')[-2])) for app in app_cache.get_apps()]))
@@ -93,6 +93,11 @@ class MetaModel(models.Model):
             'hash': self.get_hash(),
             'admin': self.admin
             })
+
+        # the model should use a GeoManager if there are any geometry fields
+        if any([isinstance(f, gis_models.GeometryField) for f in self.django_fields.values()]):
+            attrs.update(objects=gis_models.GeoManager())
+
         return type(_model_name, (models.Model,), attrs)
 
     @property
@@ -249,7 +254,7 @@ class MetaField(models.Model):
         # TODO: fix that it only handles IntegrityErrors that refer to duplicate field names
         # TODO: check the relationship between relation ship field type and related model before saving
         except IntegrityError:
-            raise DuplicateFieldName('You have defined 2 fields for model %s with the identical name %s' %(self.meta_model.name,self.name))
+            raise
 
     def __unicode__(self):
         return self.name
