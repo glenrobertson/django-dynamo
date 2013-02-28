@@ -173,6 +173,16 @@ class MetaField(models.Model):
     default  = models.CharField(verbose_name=_('Default Value'), max_length=50, blank=True)
     required = models.BooleanField(verbose_name=_('Required'), default=False)
 
+    # char field attributes
+    max_length = models.IntegerField(verbose_name=_('Max length'), null=True)
+
+    # decimal field attributes
+    max_digits = models.IntegerField(verbose_name=_('Max digits'), null=True)
+    decimal_places = models.IntegerField(verbose_name=_('Decimal places'), null=True)
+
+    # geometry field attributes
+    srid = models.IntegerField(verbose_name=_('SRID'), null=True)
+
     @property
     def django_choices(self):
         if self.choices:
@@ -231,10 +241,22 @@ class MetaField(models.Model):
         if self.unique:
             kwargs['unique']=True
 
-        # Max Lenght
-        # TODO: add params
-        kwargs['max_length']=50
-            
+        # Max Length
+        if self.max_length:
+            kwargs['max_length'] = self.max_length
+        else:
+            kwargs['max_length']=50
+
+        if self.type == 'CharField' and self.max_length:
+            kwargs['max_length'] = self.max_length
+
+        if self.type == 'DecimalField' and all([self.max_digits, self.decimal_places]):
+            kwargs['max_digits'] = self.max_digits
+            kwargs['decimal_places'] = self.decimal_places
+
+        if self.type == 'GeometryField' and self.srid:
+            kwargs['srid'] = self.srid
+
         return args,kwargs
 
     @property
