@@ -26,7 +26,7 @@ from dynamo.handlers import when_classes_prepared
 # Build all existing dynamic models as soon as possible
 # This is optional, but is nice as it avoids building the model when the
 # first relevant view is loaded.
-handlers.when_classes_prepared('dynamo.MetaModel','dynamo.MetaField', build_existing_dynamic_models)
+# handlers.when_classes_prepared('dynamo.MetaModel','dynamo.MetaField', build_existing_dynamic_models)
     
   
 class MetaModel(models.Model):
