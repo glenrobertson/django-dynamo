@@ -173,6 +173,10 @@ class MetaField(models.Model):
     default  = models.CharField(verbose_name=_('Default Value'), max_length=50, blank=True)
     required = models.BooleanField(verbose_name=_('Required'), default=False)
 
+    # date field attributes
+    auto_now = models.NullBooleanField(verbose_name=_('Auto now (Date field)'), null=True)
+    auto_now_add = models.NullBooleanField(verbose_name=_('Auto now add (Date field)'), null=True)
+
     # char field attributes
     max_length = models.IntegerField(verbose_name=_('Max length'), null=True)
 
@@ -253,6 +257,11 @@ class MetaField(models.Model):
         if self.type == 'DecimalField' and all([self.max_digits, self.decimal_places]):
             kwargs['max_digits'] = self.max_digits
             kwargs['decimal_places'] = self.decimal_places
+
+        if self.type in ['DateField', 'DateTimeField'] and self.auto_now != None:
+            kwargs['auto_now'] = self.auto_now
+        if self.type in ['DateField', 'DateTimeField'] and self.auto_now_add != None:
+            kwargs['auto_now'] = self.auto_now_add
 
         if self.type == 'GeometryField' and self.srid:
             kwargs['srid'] = self.srid
